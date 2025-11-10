@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>🛠️ Cập nhật dữ liệu Firestore</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/donhang.css" /> <!-- dùng lại card, table, btn, layout -->
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/menu.js"></script>
+  <script type="module" src="js/updatedata.js" defer></script>
+</head>
+
+<body>
+  <!-- Menu -->
+  <div id="menu"></div>
+
+  <!-- Nội dung chính -->
+  <main class="container">
+    <h1>🧩 Cập nhật dữ liệu Firestore</h1>
+
+    <!-- Chọn collection -->
+    <section class="card">
+      <div class="row">
+        <div class="col-6">
+          <label>Chọn collection</label>
+          <select id="collectionSelect">
+            <option value="">-- Chọn --</option>
+            <option value="orders">🧺 Orders</option>
+            <option value="programs">🎁 Programs</option>
+            <option value="coupons">🎫 Coupons</option>
+          </select>
+        </div>
+
+        <div class="col-6" id="idInputWrap" style="display:none;">
+          <label>ID hoặc mã cần tìm</label>
+          <div class="row">
+            <input id="docIdInput" placeholder="Nhập orderId hoặc mã..." />
+            <button id="btnLoadDoc" class="btn primary">🔍 Tải dữ liệu</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form cập nhật -->
+    <section id="updateForm" class="card" style="display:none;">
+      <h2>Thông tin chi tiết</h2>
+      <div id="fieldsContainer"></div>
+
+      <div class="row right">
+        <button type="button" id="btnViewJson" class="btn">👁️ Xem JSON gốc</button>
+        <button type="submit" class="btn primary">💾 Cập nhật</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Modal hiển thị JSON -->
+  <div id="jsonModal" class="modal">
+    <div class="modal-content">
+      <h2>Dữ liệu hiện tại</h2>
+      <pre id="jsonDisplay" style="max-height:60vh;overflow:auto;background:#f6f8fa;padding:10px;border-radius:8px;"></pre>
+      <div class="modal-actions">
+        <button id="btnCloseJson" class="btn">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Bổ sung nhẹ để khớp style tổng thể */
+    label { font-weight: 600; margin-bottom: 6px; display: block; }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+    textarea { resize: vertical; }
+    .field-group { margin-bottom: 12px; }
+    .readonly { background: #f3f4f6; }
+    .toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #333; color: white;
+      padding: 10px 14px; border-radius: 8px;
+      display: none; z-index: 9999;
+    }
+    .card h2 { margin-top: 0; margin-bottom: 15px; }
+    #fieldsContainer .field-group label { color: #222; }
+    .btn.primary.large { font-size: 16px; padding: 10px 20px; }
+    input[readonly] {
+  background-color: #f3f4f6;
+}
+input.changed, select.changed, textarea.changed {
+  background-color: #fff3cd !important; /* vàng nhạt */
+}
+.readonly,
+input[readonly],
+select:disabled,
+textarea[readonly] {
+  background: #f3f4f6;
+  color: #555;
+  cursor: not-allowed;
+}
+  </style>
+</body>
+</html>

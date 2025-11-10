@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>In hóa đơn</title>
+  <link rel="stylesheet" href="css/in-bill.css" />
+</head>
+<body>
+  <div id="controls">
+    <label>Khổ in: 
+      <select id="paperSize">
+        <option value="bill">Bill nhỏ (80mm)</option>
+        <option value="a5">A5</option>
+      </select>
+    </label>
+    <button id="btnPrint">🖨️ In ngay</button>
+  </div>
+
+  <div id="printArea" class="bill">
+    <h2 class="shop-name">TIỆM GIẶT ỦI NHÀ BƠ</h2>
+    <p class="shop-info">Địa chỉ: 60 HÀNG TRE,TĂNG NHƠN PHÚ, TP HCM<br>SĐT: 0969902806</p>
+
+    <hr />
+    <div id="orderInfo">
+      <p><strong>Mã đơn:</strong> <span id="orderId"></span></p>
+      <p><strong>Ngày:</strong> <span id="orderDate"></span></p>
+      <p><strong>Khách hàng:</strong> <span id="customerName"></span></p>
+      <p><strong>SĐT:</strong> <span id="customerPhone"></span></p>
+    </div>
+    <hr />
+
+    <table id="itemsTable">
+      <thead>
+        <tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <hr />
+    <div id="discounts"></div>
+    <div id="totals">
+      <p><strong>Tổng cộng:</strong> <span id="total"></span></p>
+      <p><strong>Giảm giá:</strong> <span id="discount"></span></p>
+      <p><strong>Khách trả:</strong> <span id="final"></span></p>
+    </div>
+    <hr />
+    <p class="note">💙 Cảm ơn quý khách đã ủng hộ 💙</p>
+  </div>
+
+  <script type="module" src="js/in-bill.js"></script>
+</body>
+</html>

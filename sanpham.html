@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📦 Khai báo sản phẩm</title>
+
+  <!-- ⛔ Ẩn giao diện trước khi kiểm tra quyền -->
+  <style>
+    html, body {
+      visibility: hidden;
+      background: #f9f9f9;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <!-- 🔒 Kiểm tra quyền & đồng bộ đăng nhập -->
+  <script type="module">
+    import { initProtectedPage } from "./js/permissionInit.js";
+    // ✅ Tự động kiểm tra login, quyền và đồng bộ logout giữa tab
+    await initProtectedPage("sanphamManage", "view");
+  </script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <!-- 🔸 Menu -->
+  <div id="menu"></div>
+
+  <!-- 🔸 Nội dung chính -->
+  <main class="main-content">
+    <h1>📦 Khai báo sản phẩm</h1>
+
+    <!-- 🧩 Form thêm sản phẩm (chỉ hiện nếu có quyền create) -->
+    <form 
+      id="formSanPham" 
+      class="form-card"
+      data-permission-key="sanphamManage" 
+      data-permission-action="create"
+    >
+      <input type="text" id="tenSP" placeholder="Tên sản phẩm" required />
+      <input type="number" id="giaSP" placeholder="Giá" required />
+      <input type="number" id="soLuongSP" placeholder="Số lượng" required />
+      <textarea id="moTaSP" placeholder="Mô tả"></textarea>
+
+      <label class="checkbox-inline">
+        <input type="checkbox" id="tonKhoSP" /> Có xét tồn kho
+      </label>
+
+      <button type="submit">➕ Thêm sản phẩm</button>
+    </form>
+
+    <!-- 📋 Danh sách sản phẩm -->
+    <section class="list-section">
+      <h2>Danh sách sản phẩm</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Tồn kho?</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="listSanPham"></tbody>
+      </table>        
+    </section>
+
+    <!-- ✏️ Modal chỉnh sửa sản phẩm -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <h2>✏️ Chỉnh sửa sản phẩm</h2>
+        <form id="formEditSP" class="form-card">
+          <input type="hidden" id="editID" />
+          <input type="text" id="editName" placeholder="Tên sản phẩm" required />
+          <input type="number" id="editPrice" placeholder="Giá" required />
+          <input type="number" id="editQty" placeholder="Số lượng" required />
+          <label class="checkbox-inline">
+            <input type="checkbox" id="editCheckStock" /> Có xét tồn kho
+          </label>
+          <textarea id="editDesc" placeholder="Mô tả"></textarea>
+          <div class="form-actions">
+            <button type="submit">💾 Lưu</button>
+            <button type="button" id="cancelEdit">❌ Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- 🔧 Script -->
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/menu.js" defer></script>
+  <script type="module" src="js/sanpham.js" defer></script>
+</body>
+</html>

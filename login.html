@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="css/stylelogin.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <h2>Đăng nhập</h2>
+      <form id="loginForm">
+        <div class="input-group">
+          <input type="email" id="email" required />
+          <label for="email">Email</label>
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" required />
+          <label for="password">Mật khẩu</label>
+        </div>
+        <button type="submit" class="btn-login">Đăng nhập</button>
+      </form>
+      <p class="message" id="message"></p>
+    </div>
+  </div>
+
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>

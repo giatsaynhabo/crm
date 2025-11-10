@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📦 Danh sách đơn hàng</title>
+
+  <!-- ⛔ Ẩn trang cho đến khi kiểm tra quyền xong -->
+  <style>
+    html, body {
+      visibility: hidden;
+      background: #f4f6f8;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <!-- ✅ Kiểm tra quyền trước khi hiển thị -->
+  <script type="module">
+    import { initProtectedPage } from "./js/permissionInit.js";
+    await initProtectedPage("donhangManage", "view"); // chỉ người có quyền donhangManage.view mới xem được
+  </script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/donhang_ds.css" />
+
+  <!-- Firebase + Script -->
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/menu.js" defer></script>
+  <script type="module" src="js/donhang_ds.js" defer></script>
+  <!-- Tom Select (dropdown tìm kiếm đa chọn) -->
+<link
+href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css"
+rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+</head>
+
+<body>
+  <!-- Menu tự động load và áp dụng quyền -->
+  <div id="menu"></div>
+
+  <main class="container">
+    <h1>📦 Danh sách đơn hàng</h1>
+
+    <!-- Thanh công cụ -->
+    <section class="toolbar-card">
+      <div class="left">
+        <select id="filterStatus">
+          <option value="">Tất cả trạng thái</option>
+          <option value="đã giặt xong">Đã giặt xong</option>
+          <option value="chờ giao">Chờ giao</option>
+          <option value="đã giao">Đã giao</option>
+          <option value="hủy">Hủy</option>
+        </select>
+    
+        <input id="searchInput" placeholder="Tìm theo OrderID hoặc SĐT..." />
+        <div class="creator-filter">
+          <select id="filterCreator" placeholder="Chọn người tạo..." multiple></select>
+        </div>
+        
+        <input id="filterDateFrom" type="date" />
+        <input id="filterDateTo" type="date" />
+    
+        <button id="btnSearch" class="btn search">🔍 Tìm</button>
+        <button id="btnClear" class="btn delete">🗑️ Xóa</button>
+      </div>
+    
+      <div class="right">
+        <button id="btnSync" class="btn"
+          data-permission-key="donhangManage"
+          data-permission-action="sync">
+          🔁 Đồng bộ
+        </button>
+    
+        <button id="btnExportExcel" class="btn excel"
+          data-permission-key="donhangManage"
+          data-permission-action="export">
+          📊 Xuất Excel
+        </button>
+    
+        <button id="btnReload" class="btn primary"
+          data-permission-key="donhangManage"
+          data-permission-action="reload">
+          🔄 Tải lại
+        </button>
+      </div>
+    </section>
+    
+    <!-- Bảng dữ liệu -->
+    <section class="card">
+      <table class="data-table" id="ordersTable">
+        <thead>
+          <tr>
+            <th>OrderID</th>
+            <th>Khách</th>
+            <th>SĐT</th>
+            <th>Sản phẩm (tổng loại)</th>
+            <th>Tổng tiền</th>
+            <th>Giảm giá</th>
+            <th>Thanh toán</th>
+            <th>Còn nợ</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Ngày giao</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Modal chi tiết đơn -->
+  <div id="modalDetail" class="modal">
+    <div class="modal-content">
+      <h2>Chi tiết đơn <span id="detailOrderId"></span></h2>
+      <div id="detailBody"></div>
+
+      <div class="modal-actions">
+        <button id="btnMarkDelivered" class="btn primary"
+          data-permission-key="donhangManage"
+          data-permission-action="update">
+          ✅ Đánh dấu đã giao
+        </button>
+
+        <button id="btnPrintInvoice" class="btn"
+          data-permission-key="donhangManage"
+          data-permission-action="print">
+          🖨️ In hóa đơn
+        </button>
+
+        <button id="btnCloseDetail" class="btn">❌ Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Sau khi load toàn bộ trang, áp dụng UI permission -->
+  <script type="module">
+    import { applyPermissionUI } from "./js/checkPermission.js";
+    await applyPermissionUI();
+    // Khi hoàn tất, hiển thị lại trang
+    document.documentElement.style.visibility = "visible";
+    document.body.style.visibility = "visible";
+  </script>
+</body>
+</html>

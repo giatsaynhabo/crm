@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>👥 Quản lý Nhân viên & Cửa hàng</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- ⛔ Ẩn trang cho đến khi kiểm tra quyền xong -->
+  <style>
+    .left-tools {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    /* Nút Thêm nhân viên */
+#btnOpenAddNV {
+  background: #007bff; /* xanh dương */
+  color: #fff;
+}
+#btnOpenAddNV:hover {
+  background: #0062cc;
+}
+
+/* Nút Thêm cửa hàng */
+#btnOpenAddCH {
+  background: #067833; /* cam */
+  color: #fff;
+}
+#btnOpenAddCH:hover {
+  background: #e67600;
+}
+
+/* Nút Danh sách cửa hàng */
+#btnListCH {
+  background: #6c757d; /* xám */
+  color: #fff;
+}
+#btnListCH:hover {
+  background: #5a6268;
+}
+
+/* Nút Khai báo vị trí kho */
+#btnOpenKhaiBaoVT {
+  background: #28a745; /* xanh lá */
+  color: #fff;
+}
+#btnOpenKhaiBaoVT:hover {
+  background: #218838;
+}
+
+/* Tối ưu layout nút */
+.left-tools button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+  </style>
+
+  <!-- 🔒 Kiểm tra đăng nhập + quyền truy cập trang -->
+  <script type="module">
+    import { initProtectedPage } from "./js/permissionInit.js";
+    // ✅ Gọi hàm khởi tạo bảo vệ trang: (key, action)
+    await initProtectedPage("nhanvienManage", "view");
+  </script>
+
+  <script type="module" src="js/firebaseConfig.js" defer></script>
+  <script type="module" src="js/menu.js" defer></script>
+  <script type="module" src="js/nhanvien.js" defer></script>
+</head>
+
+<body>
+  <div id="menu"></div>
+
+  <main class="container">
+    <h1>👥 Quản lý Nhân viên & Cửa hàng</h1>
+
+    <div class="toolbar">
+      <div class="left-tools">
+        <button id="btnOpenAddNV" class="btn-add"
+                data-permission-key="nhanvienManage"
+                data-permission-action="create">➕ Thêm nhân viên</button>
+
+        <button id="btnOpenAddCH" class="btn-add orange"
+                data-permission-key="cuaHangManage"
+                data-permission-action="create">🏪 Thêm cửa hàng</button>
+
+        <button id="btnListCH" class="btn-add gray"
+                data-permission-key="cuaHangManage"
+                data-permission-action="view">📋 Danh sách cửa hàng</button>
+
+        <button id="btnOpenKhaiBaoVT" class="btn-add green"
+                data-permission-key="viTriKhoManage"
+                data-permission-action="create">📦 Khai báo vị trí kho</button>
+      </div>
+
+      <div class="search-area">
+        <input type="text" id="searchInput" placeholder="Tìm theo tên hoặc SĐT..." 
+               data-permission-key="nhanvienManage"
+               data-permission-action="search"/>
+        <button id="btnSearch" class="btn-save"
+                data-permission-key="nhanvienManage"
+                data-permission-action="search">Tìm</button>
+        <button id="btnClear" class="btn-cancel"
+                data-permission-key="nhanvienManage"
+                data-permission-action="search">Xóa</button>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr style="background:#f4f6f8;">
+          <th>User</th>
+          <th>Họ tên</th>
+          <th>SĐT</th>
+          <th>Địa chỉ</th>
+          <th>Giới tính</th>
+          <th>Quyền</th>
+          <th>Chức vụ</th>
+          <th>Tình trạng</th>
+          <th>Kho làm việc</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="listNhanVien"></tbody>
+    </table>
+  </main>
+
+  <!-- 🧩 Modal thêm nhân viên -->
+  <div id="modalAddNV" class="modal">
+    <div class="modal-content">
+      <h2>➕ Thêm nhân viên</h2>
+      <form id="formNhanVien">
+        <div class="form-grid">
+          <div class="form-group"><label>Họ tên</label><input type="text" id="nvHoTen" required /></div>
+          <div class="form-group"><label>SĐT</label><input type="text" id="nvSdt" required /></div>
+          <div class="form-group full"><label>Email</label><input type="email" id="nvEmail" required /></div>
+          <div class="form-group full"><label>Địa chỉ</label><input type="text" id="nvDiaChi" required /></div>
+          <div class="form-group"><label>Giới tính</label>
+            <select id="nvGioiTinh"><option value="">Chọn</option><option>Nam</option><option>Nữ</option></select>
+          </div>
+          <div class="form-group"><label>Quyền</label>
+            <select id="nvQuyen">
+              <option value="nhanvien">Nhân viên</option>
+              <option value="admin">Admin</option>
+              <option value="quanly">Quản lý</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Chức vụ</label>
+            <select id="nvChucVu">
+              <option value="nhanvientt">Nhân viên thực tập</option>
+              <option value="Admin">Admin</option>
+              <option value="quanly">Quản lý</option>
+              <option value="nhanvien">Nhân viên</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Tình trạng</label>
+            <select id="nvTinhTrang"><option value="active">Kích hoạt</option><option value="inactive">Ngừng hoạt động</option></select>
+          </div>
+          <div class="form-group">
+            <label for="nvKho">Kho làm việc:</label>
+            <select id="nvKho"><option value="">-- Chọn kho làm việc --</option></select>
+          </div>
+          <div class="form-group"><label><input type="checkbox" id="nvQuyenKho" /> Cấp quyền quản lý kho</label></div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-save">💾 Lưu</button>
+          <button type="button" id="btnCancelNV" class="btn-cancel">❌ Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal thêm cửa hàng -->
+  <div id="modalAddCH" class="modal">
+    <div class="modal-content">
+      <h2>🏪 Thêm cửa hàng mới</h2>
+      <form id="formCuaHang">
+        <div class="form-grid">
+          <div class="form-group full"><label>Tên cửa hàng</label><input type="text" id="chTen" required /></div>
+          <div class="form-group full"><label>Địa chỉ</label><input type="text" id="chDiaChi" required /></div>
+          <div class="form-group"><label>Trạng thái</label>
+            <select id="chTrangThai"><option value="active">Kích hoạt</option><option value="inactive">Tạm dừng</option></select>
+          </div>
+          <div class="form-group"><label>Quản lý cửa hàng</label>
+            <select id="chQuanLy" required><option value="">-- Chọn nhân viên quản lý --</option></select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-save">💾 Lưu</button>
+          <button type="button" id="btnCancelCH" class="btn-cancel">❌ Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal danh sách cửa hàng -->
+  <div id="modalListCH" class="modal">
+    <div class="modal-content" style="width:900px; max-height:90vh; overflow:auto;">
+      <h2>📋 Danh sách cửa hàng</h2>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <input type="text" id="searchCH" placeholder="Tìm theo tên hoặc quản lý..."
+               style="flex:1; padding:8px; border-radius:6px; border:1px solid #ccc;">
+        <button id="btnSearchCH" class="btn-save">Tìm</button>
+        <button id="btnClearCH" class="btn-cancel">Xóa</button>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Store ID</th><th>Tên kho</th><th>Địa chỉ</th><th>Quản lý</th><th>Trạng thái</th><th>Ngày tạo</th><th>Hành động</th></tr>
+        </thead>
+        <tbody id="listCuaHang"></tbody>
+      </table>
+      <div class="modal-actions"><button id="btnCloseCH" class="btn-cancel">❌ Đóng</button></div>
+    </div>
+  </div>
+
+  <!-- Modal khai báo vị trí kho -->
+  <div id="modalKhaiBaoVT" class="modal">
+    <div class="modal-content" style="width:800px; max-height:90vh; overflow:auto;">
+      <h2>📦 Khai báo vị trí kho</h2>
+      <form id="formViTriKho">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Chọn kho để khai báo</label>
+            <select id="vtKhoSelect" required><option value="">-- Chọn kho --</option></select>
+          </div>
+          <div class="form-group"><label>Khu</label><input type="text" id="vtKhu" placeholder="VD: A, B, C..." required /></div>
+          <div class="form-group"><label>Kệ</label><input type="number" id="vtKe" min="1" required /></div>
+          <div class="form-group"><label>Số tầng/kệ</label><input type="number" id="vtTang" min="1" required /></div>
+          <div class="form-group"><label>Số vị trí/tầng</label><input type="number" id="vtViTri" min="1" required /></div>
+          <div class="form-group full"><label>Số lượng SP / vị trí</label><input type="number" id="vtSoLuong" min="1" required /></div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-save">💾 Lưu</button>
+          <button type="button" id="btnCancelVT" class="btn-cancel">❌ Đóng</button>
+        </div>
+      </form>
+
+      <h3 style="margin-top:20px;">📋 Danh sách vị trí trong kho</h3>
+      <table class="data-table vt-table">
+        <thead>
+          <tr>
+            <th>Khu</th>
+            <th>Kệ</th>
+            <th>Tầng</th>
+            <th>Vị trí</th>
+            <th>Mã</th>
+            <th>Số lượng</th>
+            <th>Ngày khai báo</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="listViTriKho"></tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

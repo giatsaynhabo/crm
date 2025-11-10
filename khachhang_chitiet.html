@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chi tiết khách hàng</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/khachhang_chitiet.css" />
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/menu.js"></script>
+  <script type="module" src="js/khachhang_chitiet.js"></script>
+</head>
+<body>
+  <div id="menu"></div>
+
+  <main class="container">
+    <h1>👤 Thông tin khách hàng</h1>
+
+    <div id="khDetail" class="card"></div>
+
+    <hr />
+
+    <!-- 🏠 Khu vực địa chỉ -->
+    <section class="card">
+      <h2>🏠 Địa chỉ giao hàng</h2>
+      <div id="addressList"></div>
+      <!-- Popup thêm địa chỉ -->
+      <div id="modalAddAddress" class="modal">
+        <div class="modal-content">
+          <h3>➕ Thêm địa chỉ mới</h3>
+          <form id="formAddAddress">
+            <input type="text" id="tinh" placeholder="Tỉnh/TP" required />
+            <input type="text" id="phuong" placeholder="Phường/Xã" required />
+            <input type="text" id="duong" placeholder="Tên đường, số nhà" required />
+            <label>
+              <input type="checkbox" id="isDefault" /> Đặt làm địa chỉ mặc định
+            </label>
+            <div class="modal-actions">
+              <button type="submit" class="btn-save">💾 Lưu</button>
+              <button type="button" id="cancelAddAddress" class="btn-cancel">❌ Hủy</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- 🧾 Khu vực đơn hàng -->
+    <section class="card">
+      <h2>🧾 Danh sách đơn hàng đã mua</h2>
+
+      <div class="table-controls">
+        <label>
+          Hiển thị
+          <select id="rowsPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          hàng
+        </label>
+
+        <label>
+          Tháng:
+          <select id="filterMonth">
+            <option value="">Tất cả</option>
+            <option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option>
+            <option value="9">9</option><option value="10">10</option>
+            <option value="11">11</option><option value="12">12</option>
+          </select>
+        </label>
+
+        <label>
+          Năm:
+          <select id="filterYear">
+            <option value="">Tất cả</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </label>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Đơn hàng</th>
+            <th>Sản phẩm</th>
+            <th>Tổng tiền</th>
+            <th>Giảm giá</th>
+            <th>Phải trả</th>
+            <th>Còn nợ</th>
+            <th>Hình thức thanh toán</th>
+            <th>User tạo</th>
+            <th>Thời gian tạo</th>
+          </tr>
+        </thead>
+        <tbody id="orderList"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </section>
+  </main>
+</body>
+</html>

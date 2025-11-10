@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<title>Danh sách — Thu / Chi</title>
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/thuchi.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<style>
+/* 🌸 Giao diện tổng thể */
+body {
+  visibility: hidden;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background: radial-gradient(circle at top left, #ffa023, #f8b87b);
+  color: #333;
+
+}
+
+/* Container & Card */
+.container { max-width: 2000px; margin: 36px auto; padding: 0 16px; }
+.card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+h1 { text-align: center; margin-bottom: 18px; }
+
+/* Bộ lọc */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+.filters input,
+.filters select {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-family: inherit;
+}
+.filters button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Nút */
+.btn {
+  background: #e6eefc;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover { background: #d8e3fa; }
+.btn.primary { background: #007bff; color: #fff; }
+.btn.warning { background: #ffc107; color: #000; }
+.btn.success { background: #28a745; color: #fff; }
+.btn.danger { background: #dc3545; color: #fff; }
+
+/* Bảng dữ liệu */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+.data-table th,
+.data-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eef1f5;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.data-table th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+.data-table tbody tr:hover {
+  background: #f0f4ff;
+}
+
+/* Tổng kết */
+#summary {
+  margin-top: 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: right;
+}
+/* Tiêu đề & Form */
+.popup h2, .popup h3 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+.form-group {
+  margin-bottom: 0.8rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+input[readonly] { background: #f7f9fc; }
+
+/* Khu vực nút trong popup */
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+/* Popup Chi tiết phiếu */
+.history-table-wrapper {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+#detailHistory {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+#detailHistory th,
+#detailHistory td {
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+#detailHistory th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+/* Thông tin chi tiết */
+.detail-row {
+  display: flex;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.detail-row .label {
+  width: 180px;
+  font-weight: bold;
+  color: #333;
+}
+.detail-row .value {
+  flex: 1;
+  padding: 4px 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Phần thêm chi */
+#addPaymentSection {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+}
+#btnCloseDetail {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#btnCloseDetail:hover { background: #d9363e; }
+
+/* SweetAlert luôn nổi trên cùng */
+.swal2-container { z-index: 99999 !important; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .filters { flex-direction: column; align-items: stretch; }
+  .popup-content { width: 95%; }
+}
+/* 🔹 Popup Edit Phiếu Thu/Chi */
+#detailInfo.edit-mode {
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+/* Input trong edit mode */
+#detailInfo.edit-mode input.editable-input {
+  width: 100%;
+  padding: 6px 10px;
+  margin: 2px 0;
+  border: 1px solid #b0c4de;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #f5f7fa;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#detailInfo.edit-mode input.editable-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+  outline: none;
+}
+
+/* Nút lưu và hủy */
+#btnSaveEdit, #btnCancelEdit {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 8px;
+  margin-right: 6px;
+  transition: background 0.2s;
+}
+
+#btnSaveEdit {
+  background: #28a745;
+  color: #fff;
+}
+#btnSaveEdit:hover {
+  background: #218838;
+}
+
+#btnCancelEdit {
+  background: #ffc107;
+  color: #000;
+}
+#btnCancelEdit:hover {
+  background: #e0a800;
+}
+
+/* Khi edit, highlight các label */
+#detailInfo.edit-mode .label-value .label {
+  font-weight: 600;
+  color: #007bff;
+}
+
+/* Sắp xếp các row trong edit */
+#detailInfo.edit-mode .detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 900px) {
+  #detailInfo.edit-mode .detail-row {
+    flex-direction: column;
+  }
+}
+
+</style>
+
+<!-- 🔒 Kiểm tra quyền & đồng bộ login -->
+<script type="module">
+  import { initProtectedPage } from "./js/permissionInit.js";
+  // Chỉ gọi 1 hàm duy nhất, sẽ xử lý:
+  // - Ẩn/hiện body
+  // - Kiểm tra login
+  // - Kiểm tra quyền "view" cho "thuchi"
+  // - Đồng bộ UI theo quyền
+  await initProtectedPage("thuchi", "view");
+</script>
+</head>
+<body>
+<div id="menu"></div>
+
+<main class="container">
+<h1>💰 Danh sách Phiếu Thu / Chi</h1>
+
+<!-- Bộ lọc -->
+<section class="card">
+  <div class="filters">
+    <div>
+      <label>Chọn ngày</label><br/>
+      <select id="dateRangeSelect">
+        <option value="today">Hôm nay</option>
+        <option value="yesterday">Hôm qua</option>
+        <option value="7days">7 ngày trước</option>
+        <option value="14days">14 ngày trước</option>
+        <option value="30days">30 ngày trước</option>
+        <option value="thisMonth">Tháng này</option>
+        <option value="lastMonth">Tháng trước</option>
+        <option value="custom">Tùy chọn</option>
+        <option value="all">Tất cả</option>
+      </select>
+    </div>
+    <div>
+      <label>Từ ngày</label><br/>
+      <input type="date" id="fromDate"/>
+    </div>
+    <div>
+      <label>Đến ngày</label><br/>
+      <input type="date" id="toDate"/>
+    </div>
+    <div>
+      <label>Người tạo</label><br/>
+      <select id="createdByFilter"><option value="">-- Tất cả --</option></select>
+    </div>
+    <div>
+      <label>Người thu</label><br/>
+      <select id="userThuFilter"><option value="">-- Tất cả --</option></select>
+    </div>
+    <div>
+      <label>Loại giao dịch</label><br/>
+      <select id="typeFilter">
+        <option value="">-- Tất cả --</option>
+        <option value="thu">Thu</option>
+        <option value="chi">Chi</option>
+      </select>
+    </div>
+    <div>
+      <label>Phương thức</label><br/>
+      <select id="paymentFilter">
+        <option value="">-- Tất cả --</option>
+        <option value="tiền mặt">Tiền mặt</option>
+        <option value="chuyển khoản">Chuyển khoản</option>
+      </select>
+    </div>
+    <div>
+      <button id="btnFilter" class="btn primary">Lọc</button>
+      <button id="btnReset" class="btn">Reset</button>
+      <button id="btnReload" class="btn warning">🔄 Đồng bộ</button>
+    </div>
+    
+    <div style="margin-left:auto">
+      <button id="btnExportExcel" class="btn success" data-permission-key="thuchi" data-permission-action="export">📤 Xuất Excel</button>
+      <button id="btnCreateChi" class="btn success">➕ Tạo Phiếu Chi</button>
+    </div>
+  </div>
+
+  <table class="data-table" id="transactionsTable">
+    <thead>
+      <tr>
+        <th>Mã phiếu</th>
+        <th>Loại</th>
+        <th>Đơn hàng</th>
+        <th>User tạo</th>
+        <th>User thu/chi</th>
+        <th>Ngày</th>
+        <th>Phải thu</th>
+        <th>Đã thu</th>
+        <th>Còn nợ</th>
+        <th>Phiếu CT</th>
+        <th>Coupon</th>
+        <th>Phương thức</th>
+        <th>Ghi chú</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="summary"></div>
+</section>
+</main>
+
+<!-- Popup Tạo Phiếu Chi -->
+<div id="popupChi" class="popup">
+  <div class="popup-content">
+    <h2>💸 Tạo Phiếu Chi</h2>
+    <div class="form-group">
+      <label>Số tiền</label>
+      <input type="text" id="chiAmount" placeholder="Nhập số tiền" />
+    </div>
+    <div class="form-group">
+      <label>Kho chi</label>
+      <select 
+        id="chiKho"
+        data-permission-key="donhangCreate"
+        data-permission-action="EditStoreID"
+        data-permission-behavior="disable">
+      </select>
+    </div>    
+    <div class="form-group">
+      <label>Nội dung chi</label>
+      <input type="text" id="chiNoiDung" placeholder="Nội dung chi" />
+    </div>
+    <div class="form-group">
+      <label>Mục khoản chi</label>
+      <select id="chiMucKhoan">
+        <option value="Chi tiền điện - nước">Chi tiền điện - nước</option>
+        <option value="Chi tiền nước giặt - sả">Chi tiền nước giặt - sả</option>
+        <option value="Chi tiền vệ sinh">Chi tiền vệ sinh</option>
+        <option value="Chi phí khác">Chi tiền khác</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tiền mặt</label>
+      <input type="text" id="chiCash" placeholder="Tiền mặt" />
+    </div>
+    <div class="form-group">
+      <label>Chuyển khoản</label>
+      <input type="text" id="chiBank" placeholder="Chuyển khoản" />
+    </div>
+    <div class="form-group">
+      <label>Còn nợ</label>
+      <input type="text" id="chiConNo" placeholder="Còn nợ" readonly />
+    </div>
+    <div class="popup-buttons">
+      <button id="btnSaveChi" class="btn success">💾 Lưu</button>
+      <button id="btnCancelChi" class="btn">❌ Hủy</button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup Chi Tiết Phiếu -->
+<div id="popupDetail" class="popup">
+  <div class="popup-content">
+    <h2>📄 Chi Tiết Phiếu Thu - Chi</h2>
+    <div id="detailInfo"></div>
+    <h3>Lịch sử thu chi</h3>
+    <div class="history-table-wrapper">
+      <table id="detailHistory">
+        <thead>
+          <tr>
+            <th>Tiền mặt</th>
+            <th>Chuyển khoản</th>
+            <th>Ghi chú</th>
+            <th>User</th>
+            <th>Ngày</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="addPaymentSection">
+      <h3>💰 Chi tiền</h3>
+      <div class="form-group">
+        <label>Tiền mặt</label>
+        <input type="text" id="detailCash" placeholder="Tiền mặt" />
+      </div>
+      <div class="form-group">
+        <label>Chuyển khoản</label>
+        <input type="text" id="detailBank" placeholder="Chuyển khoản" />
+      </div>
+      <div class="form-group">
+        <label>Ghi chú</label>
+        <input type="text" id="detailNote" placeholder="Ghi chú" />
+      </div>
+      <div class="popup-buttons">
+        <button id="btnAddPayment" class="btn success">💰 Chi</button>
+        <button id="btnCloseDetail" class="btn">❌ Đóng</button>
+      </div>
+      <div class="popup-buttons" style="margin-bottom:10px;">
+        <button id="btnEditTransaction" class="btn primary">✏️ Chỉnh sửa phiếu</button>
+      </div>      
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script type="module" src="js/firebaseConfig.js"></script>
+<script type="module" src="js/thuchi.js" defer></script>
+<script type="module" src="js/menu.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>👤 Quản lý khách hàng</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- ⛔ Ẩn trang cho đến khi kiểm tra quyền xong -->
+  <style>
+    html, body {
+      visibility: hidden;
+      background: #f4f6f8;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+  </style>
+
+  <!-- 🔒 Kiểm tra quyền & đồng bộ login -->
+  <script type="module">
+    import { initProtectedPage } from "./js/permissionInit.js";
+    // ✅ Chỉ cần dòng này thôi, nó xử lý hết (login, quyền, UI, logout đồng bộ)
+    await initProtectedPage("donhangCreate", "view");
+  </script>
+</head>
+
+<body>
+  <!-- 🔸 Menu chung -->
+  <div id="menu"></div>
+
+  <main class="container">
+    <h1>👤 Quản lý khách hàng</h1>
+
+    <!-- 🔍 Thanh công cụ -->
+    <div class="toolbar">
+      <button id="btnOpenAddKH" class="btn-add" data-permission-key="khachhangManage" data-permission-action="create">
+        ➕ Thêm khách hàng
+      </button>
+
+      <div class="search-area">
+        <input type="text" id="searchKH" placeholder="🔍 Tìm theo tên hoặc SĐT..." />
+        <button id="btnSearchKH" class="btn-search">Tìm</button>
+        <button id="btnClearKH" class="btn-clear">❌ Xóa tìm</button>
+      </div>
+    </div>
+
+    <!-- 🧩 Modal thêm khách hàng -->
+    <div id="addModalKH" class="modal">
+      <div class="modal-content">
+        <h2>➕ Thêm khách hàng mới</h2>
+        <form id="formKhachHang" class="form-edit">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="sdt">Số điện thoại (UID)</label>
+              <input type="text" id="sdt" name="sdt" placeholder="VD: 0912345678" required pattern="[0-9]{9,11}" />
+            </div>
+
+            <div class="form-group">
+              <label for="hoTen">Họ và tên</label>
+              <input type="text" id="hoTen" name="hoTen" required />
+            </div>
+
+            <div class="form-group full">
+              <label>Địa chỉ</label>
+              <div class="address-row">
+                <input type="text" id="tinh" placeholder="Tỉnh/TP" required />
+                <input type="text" id="phuong" placeholder="Phường/Xã" required />
+                <input type="text" id="duong" placeholder="Tên đường, số nhà" required />
+              </div>
+            </div>
+
+            <div class="form-group full">
+              <label>Giới tính</label>
+              <div class="gender-group">
+                <label><input type="radio" name="gioiTinh" value="Nam" required /> Nam</label>
+                <label><input type="radio" name="gioiTinh" value="Nữ" /> Nữ</label>
+                <label><input type="radio" name="gioiTinh" value="Khác" /> Khác</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn-save">💾 Lưu</button>
+            <button type="button" id="cancelAddKH" class="btn-cancel">❌ Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 🧩 Modal chỉnh sửa khách hàng -->
+    <div id="editModalKH" class="modal">
+      <div class="modal-content">
+        <h2>✏️ Chỉnh sửa thông tin khách hàng</h2>
+        <form id="formEditKH" class="form-edit">
+          <input type="hidden" id="editUid" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="editHoTen">Họ và tên</label>
+              <input type="text" id="editHoTen" required />
+            </div>
+
+            <div class="form-group">
+              <label for="editSdt">Số điện thoại (không đổi)</label>
+              <input type="text" id="editSdt" disabled />
+            </div>
+
+            <div class="form-group full">
+              <label>Địa chỉ</label>
+              <div class="address-row">
+                <input type="text" id="editTinh" placeholder="Tỉnh/TP" required />
+                <input type="text" id="editPhuong" placeholder="Phường/Xã" required />
+                <input type="text" id="editDuong" placeholder="Tên đường, số nhà" required />
+              </div>
+            </div>
+
+            <div class="form-group full">
+              <label>Giới tính</label>
+              <div class="gender-group">
+                <label><input type="radio" name="editGioiTinh" value="Nam" required /> Nam</label>
+                <label><input type="radio" name="editGioiTinh" value="Nữ" /> Nữ</label>
+                <label><input type="radio" name="editGioiTinh" value="Khác" /> Khác</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn-save">💾 Lưu</button>
+            <button type="button" id="cancelEditKH" class="btn-cancel">❌ Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ⚠️ Modal cảnh báo trùng -->
+    <div id="alertDuplicateKH" class="modal">
+      <div class="modal-content">
+        <h3>⚠️ Khách hàng đã tồn tại</h3>
+        <p id="duplicateMsg"></p>
+        <div class="modal-actions">
+          <button id="closeDuplicateKH" class="btn-cancel">Đóng</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📋 Bảng danh sách khách hàng -->
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>UID (SĐT)</th>
+          <th>Họ tên</th>
+          <th>Địa chỉ</th>
+          <th>Giới tính</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="listKhachHang">
+        <!-- JS sẽ render tại đây -->
+      </tbody>
+    </table>
+  </main>
+
+  <!-- 🔧 Script -->
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/menu.js"></script>
+  <script type="module" src="js/khachhang.js"></script>
+
+  <!-- 👀 Áp dụng phân quyền UI -->
+  <script type="module">
+    import { applyPermissionUI } from "./js/checkPermission.js";
+    await applyPermissionUI();
+    document.body.style.visibility = "visible";
+  </script>
+</body>
+</html>

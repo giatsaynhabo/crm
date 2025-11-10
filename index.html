@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang chủ | Quản lý bán hàng</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- ✅ Khởi tạo kiểm tra quyền & đăng nhập -->
+  <script type="module">
+    import { initProtectedPage } from "./js/permissionInit.js";
+    // 👇 Gọi hàm này là đủ, nó sẽ tự check login, quyền, session, storage event,...
+    initProtectedPage("dashboard", "view");
+  </script>
+</head>
+
+<body>
+  <!-- 🔸 Menu -->
+  <div id="menu"></div>
+
+  <!-- 🔸 Nội dung chính -->
+  <main class="main-content">
+    <h1>👋 Xin chào!</h1>
+    <p>Chào mừng bạn đến hệ thống quản lý bán hàng.</p>
+
+    <section class="dashboard">
+      <div class="card" data-permission-key="dashboard" data-permission-action="sanphamview">
+        📦 Sản phẩm: <span id="countSanPham">0</span>
+      </div>
+      <div class="card" data-permission-key="dashboard" data-permission-action="chuongtrinhManageview">
+        🎯 Chương trình: <span id="countChuongTrinh">0</span>
+      </div>
+      <div class="card" data-permission-key="dashboard" data-permission-action="donhangManageview">
+        🧾 Đơn hàng: <span id="countDonHang">0</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- 🔧 Script Firebase & logic -->
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/index.js" defer></script>
+  <script type="module" src="js/menu.js" defer></script>
+</body>
+</html>

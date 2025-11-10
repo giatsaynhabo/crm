@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🎯 Quản lý chương trình / khuyến mãi</title>
+
+  <!-- ⛔ Ẩn trang cho đến khi kiểm tra quyền xong -->
+  <style>
+    html,
+    body {
+      visibility: hidden;
+      background: #f4f6f8;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <!-- 🔒 Kiểm tra quyền & đồng bộ login -->
+  <script type="module">
+    import { initProtectedPage } from "./js/permissionInit.js";
+    // ✅ Chỉ cần dòng này thôi, nó xử lý hết (login, quyền, UI, logout đồng bộ)
+    await initProtectedPage("donhangCreate", "view");
+  </script>
+
+  <!-- CSS chính -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- JS -->
+  <script type="module" src="js/firebaseConfig.js"></script>
+  <script type="module" src="js/menu.js" defer></script>
+  <script type="module" src="js/chuongtrinh.js" defer></script>
+
+  <style>
+    /* Giữ nguyên style gốc của bạn */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .left-tools {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-add {
+      background: #28a745;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-add:hover {
+      background: #218838;
+    }
+
+    .search-area {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-area input {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .actions button {
+      margin-right: 6px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-edit {
+      background: #ffc107;
+      color: #111;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: #fff;
+    }
+
+    .btn-toggle {
+      background: #17a2b8;
+      color: #fff;
+    }
+
+    /* modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #fff;
+      width: 720px;
+      max-width: 100%;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .modal-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn-save {
+      background: #007bff;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: #6c757d;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (max-width:640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="menu"></div>
+
+  <main class="container">
+    <h1>🎯 Quản lý chương trình / khuyến mãi</h1>
+
+    <!-- Thanh công cụ -->
+    <div class="toolbar">
+      <div class="left-tools">
+        <!-- Thêm chương trình -->
+        <button id="btnOpenAdd" class="btn-add" data-permission-key="chuongtrinhManage" data-permission-action="create">
+          ➕ Thêm chương trình
+        </button>
+
+        <!-- Thêm coupon / phiếu chi -->
+        <button id="btnOpenCouponPhieu" class="btn-add" style="background:#ff9800;"
+          data-permission-key="chuongtrinhManage" data-permission-action="coupon_create">
+          🎟️ Thêm Coupon | Phiếu chi
+        </button>
+
+        <!-- Xem danh sách coupon -->
+        <button id="btnViewCoupons" class="btn-add" style="background:#673ab7;" data-permission-key="chuongtrinhManage"
+          data-permission-action="coupon_view">
+          📋 Xem danh sách Coupon | Phiếu chi
+        </button>
+      </div>
+
+      <div class="search-area" style="display:flex; gap:8px; align-items:center;">
+        <!-- Bộ lọc trạng thái -->
+        <select id="filterStatus" style="padding:8px; border-radius:8px; border:1px solid #ccc;">
+          <option value="active">Đang diễn ra</option>
+          <option value="ended">Đã kết thúc</option>
+          <option value="all">Tất cả</option>
+        </select>
+      
+        <!-- Bộ lọc người tạo -->
+        <select id="filterCreator" style="padding:8px; border-radius:8px; border:1px solid #ccc; min-width:160px;">
+          <option value="all">Tất cả người tạo</option>
+        </select>
+      
+        <!-- Ô tìm kiếm -->
+        <input type="text" id="searchInput" placeholder="Tìm theo mã hoặc tên..." />
+      
+        <!-- Nút hành động -->
+        <button id="btnSearch" class="btn-search">Tìm</button>
+        <button id="btnClear" class="btn-clear">Xóa</button>
+      </div>      
+    </div>
+
+    <!-- Bảng danh sách chương trình -->
+    <table class="data-table" style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f4f6f8;">
+          <th style="width:80px">Mã</th>
+          <th>Tên chương trình</th>
+          <th style="width:160px">Thời gian</th>
+          <th style="width:110px">Giảm</th>
+          <th>Áp dụng cùng CT khác</th>
+          <th>Áp dụng Coupon</th>
+          <th style="width:80px">Trạng thái</th>
+          <th style="width:200px">Ghi chú</th>
+          <th style="width:160px">Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="listPrograms"></tbody>
+    </table>
+  </main>
+
+  <!-- Modal thêm/sửa chương trình -->
+  <div id="modalProgram" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">➕ Thêm chương trình</h2>
+      <form id="formProgram">
+        <div class="form-grid">
+          <!-- các input giữ nguyên như bạn gửi -->
+          <div class="form-group"><label for="code">Mã</label><input type="text" id="code" required /></div>
+          <div class="form-group"><label for="name">Tên chương trình</label><input type="text" id="name" required />
+          </div>
+          <div class="form-group"><label for="startDate">Bắt đầu</label><input type="date" id="startDate" required />
+          </div>
+          <div class="form-group"><label for="endDate">Kết thúc</label><input type="date" id="endDate" required /></div>
+          <div class="form-group"><label for="type">Loại giảm</label><select id="type">
+              <option value="percent">%</option>
+              <option value="amount">₫</option>
+            </select></div>
+          <div class="form-group"><label for="value">Giá trị</label><input type="number" id="value" min="0" required />
+          </div>
+          <div class="form-group"><label for="maxDiscount">Giảm tối đa (₫)</label><input type="number" id="maxDiscount"
+              min="0" /></div>
+          <div class="form-group"><label for="minBill">Đơn hàng tối thiểu (₫)</label><input type="number" id="minBill"
+              min="0" /></div>
+          <div class="form-group full"><label for="note">Ghi chú</label><input type="text" id="note" /></div>
+          <div class="form-group"><label for="active">Trạng thái</label><select id="active">
+              <option value="true">Kích hoạt</option>
+              <option value="false">Tạm dừng</option>
+            </select></div>
+          <div class="form-group"><label><input type="checkbox" id="allowStack" /> Áp dụng cùng CT khác</label></div>
+          <div class="form-group"><label><input type="checkbox" id="allowCoupon" /> Áp dụng cùng coupon / phiếu
+              chi</label></div>
+          <!-- Checkbox khai báo chương trình đặc biệt -->
+          <div class="form-group full">
+            <label>
+              <input type="checkbox" id="isSpecialProgram" />
+              Khai báo chương trình đặc biệt
+            </label>
+          </div>
+
+          <!-- Input số đơn áp dụng (ẩn mặc định) -->
+          <div class="form-group full" id="specialProgramWrapper" style="display:none;">
+            <label for="specialLimit">Số đơn được áp dụng</label>
+            <input type="number" id="specialLimit" min="1" value="1" />
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-save" data-permission-key="chuongtrinhManage"
+            data-permission-action="create">
+            💾 Lưu
+          </button>
+          <button type="button" id="btnCancel" class="btn-cancel">❌ Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Coupon / Phiếu chi -->
+  <div id="modalCouponPhieu" class="modal">
+    <div class="modal-content">
+      <h2>🎟️ Tạo Coupon / Phiếu chi</h2>
+      <form id="formCouponPhieu">
+        <div class="form-group"><label>Loại</label><select id="loai">
+            <option value="coupon">COUPON</option>
+            <option value="phieuchi">PHIẾU CHI</option>
+          </select></div>
+        <div class="form-group"><label>SĐT khách hàng</label><input type="text" id="sdt" required /></div>
+        <div class="form-group"><label>Số tiền</label><input type="number" id="soTien" required min="0" /></div>
+        <div class="form-group full"><label>Nội dung</label><textarea id="noiDung" rows="3" required></textarea></div>
+        <div class="form-group full"><label for="ghiChuCoupon">Ghi chú</label><input type="text" id="ghiChuCoupon" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-save" data-permission-key="chuongtrinhManage"
+            data-permission-action="coupon_create">
+            💾 Lưu
+          </button>
+          <button type="button" id="btnCancelCouponPhieu" class="btn-cancel">❌ Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal danh sách coupon -->
+  <div id="modalListCoupons" class="modal">
+    <div class="modal-content" style="width:1000px; max-height:90vh; overflow:auto;">
+      <h2>📋 Danh sách Coupon / Phiếu chi</h2>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <input type="text" id="searchCoupon" placeholder="Tìm theo mã hoặc SĐT..."
+          style="flex:1; padding:8px; border-radius:6px; border:1px solid #ccc;">
+        <button id="btnSearchCoupon" class="btn-save">Tìm</button>
+        <button id="btnClearCoupon" class="btn-cancel">Xóa</button>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse;" class="data-table">
+        <thead>
+          <tr style="background:#f4f6f8;">
+            <th>Mã</th>
+            <th>Loại</th>
+            <th>SĐT</th>
+            <th>Số tiền</th>
+            <th>Nội dung</th>
+            <th>Trạng thái</th>
+            <th>Lý do hủy</th>
+            <th>Ngày tạo</th>
+            <th>Ngày hết hạn</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="listCoupons"></tbody>
+      </table>
+
+      <div class="modal-actions">
+        <button id="btnCloseCouponList" class="btn-cancel">❌ Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sau khi xác thực quyền, áp dụng UI permission -->
+  <script type="module">
+    import { applyPermissionUI } from "./js/checkPermission.js";
+    await applyPermissionUI();
+    document.documentElement.style.visibility = "visible";
+    document.body.style.visibility = "visible";
+  </script>
+</body>
+
+</html>

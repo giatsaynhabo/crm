@@ -1,0 +1,58 @@
+<!-- menu.html -->
+<nav class="navbar">
+  <div class="navbar-top">
+  <h2>Quản Lý Bán Hàng</h2>
+  <ul>
+    <li><a href="index.html">🏠 Trang chủ</a></li>
+
+    <!-- Có quyền creatOD.creat_new -->
+    <li data-permission-key="donhangCreate" data-permission-action="view">
+      <a href="donhang.html">🧺 Tạo Đơn hàng</a>
+    </li>
+
+    <!-- Có quyền donhangDS.view -->
+    <li data-permission-key="donhangManage" data-permission-action="view">
+      <a href="donhang_ds.html">🧾 Quản lý đơn hàng</a>
+    </li>
+
+    <!-- Có quyền sanpham.view -->
+    <li data-permission-key="sanphamManage" data-permission-action="view">
+      <a href="sanpham.html">📦 Sản phẩm</a>
+    </li>
+
+    <li data-permission-key="chuongtrinhManage" data-permission-action="view">
+      <a href="chuongtrinh.html">🎯 Chương trình</a>
+    </li>
+
+    <li data-permission-key="khachhangManage" data-permission-action="view">
+      <a href="khachhang.html">👤 Khách hàng</a>
+    </li>
+
+    <li class="dropdown" data-permission-key="quantri" data-permission-action="view">
+      <a href="#" class="dropdown-toggle">👔 Quản trị hệ thống ▾</a>
+      <ul class="submenu">
+        <li data-permission-key="quantri" data-permission-action="nhanvienManage">
+          <a href="nhanvien.html">⚙️ Nhân viên</a>
+        </li>
+        <li data-permission-key="quantri" data-permission-action="thuchi">
+          <a href="thuchi.html">💵 Thu chi</a>
+        </li>
+        <li data-permission-key="quantri" data-permission-action="capquyen">
+          <a href="capquyen.html">🔑 Cấp quyền</a>
+        </li>
+        <li data-permission-key="quantri" data-permission-action="updatedata">
+          <a href="updatedata.html">🔄 Update data</a>
+        </li>
+      </ul>
+    </li>
+
+    <li><a href="login.html">🔐 Đăng xuất</a></li>
+  </ul>
+  </div>
+  <div id="khoInfo" class="navbar-kho">Kho làm việc</div>
+
+</nav>
+<script type="module">
+  import { applyPermissionUI } from "./js/checkPermission.js";
+  applyPermissionUI();
+</script>
