@@ -1,0 +1,66 @@
+body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background: #f0f0f0;
+    padding: 10px;
+  }
+  
+  #controls {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  #btnPrint {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  #printArea {
+    background: white;
+    padding: 10px;
+    margin: auto;
+    width: 80mm;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  }
+  
+  /* A5 mode */
+  #printArea.a5 {
+    width: 148mm;
+    padding: 20px;
+  }
+  
+  .shop-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .shop-info, .note {
+    text-align: center;
+    font-size: 12px;
+  }
+  #itemsTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #itemsTable th, #itemsTable td {
+    border-bottom: 1px dashed #ccc;
+    padding: 4px;
+    font-size: 12px;
+  }
+  #totals, #discounts {
+    text-align: right;
+    font-size: 13px;
+  }
+  @media print {
+    body { background: white; }
+    #controls { display: none; }
+    #printArea {
+      box-shadow: none;
+      margin: 0;
+      width: auto;
+    }
+  }
+  

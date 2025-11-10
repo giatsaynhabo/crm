@@ -1,0 +1,422 @@
+/* =======================
+   Chung
+======================= */
+body {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background: #f5f6fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 1600px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+h1, h2, h3 {
+  margin: 0 0 15px 0;
+}
+
+/* =======================
+   Card
+======================= */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* =======================
+   Thông tin khách hàng
+======================= */
+.info-line {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+#khDetail button {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #1976d2;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+#khDetail button:hover {
+  background: #1565c0;
+}
+
+/* =======================
+   Danh sách địa chỉ
+======================= */
+.address-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.address-item.default {
+  border-left: 4px solid #27ae60;
+  background: #e9f8ef;
+}
+
+.address-item span {
+  font-size: 14px;
+}
+
+.address-item button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #f1c40f;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.address-item button:hover {
+  background: #d4ac0d;
+}
+
+/* =======================
+   Nút thêm địa chỉ
+======================= */
+.btn-add {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2ecc71;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.btn-add:hover {
+  background: #27ae60;
+}
+
+/* =======================
+   Bảng đơn hàng
+======================= */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.data-table tr:hover {
+  background-color: #fafafa;
+}
+
+/* =======================
+   Nút thao tác (nếu có)
+======================= */
+.btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1976d2;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #1565c0;
+}
+
+/* =======================
+   Pagination
+======================= */
+#pagination, .pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#pagination button, .pagination button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#pagination button:hover:not(:disabled),
+.pagination button:hover:not(.active) {
+  background-color: #f0f0f0;
+}
+
+#pagination button.active,
+.pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+#pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+#pagination span {
+  padding: 5px 8px;
+  color: #888;
+}
+
+/* =======================
+   Table controls (filter, rows per page)
+======================= */
+.table-controls {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.table-controls label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #333;
+}
+
+.table-controls select {
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.table-controls select:hover,
+.table-controls select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+.table-controls select option {
+  font-size: 14px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+/* =======================
+   Modal popup chuẩn đẹp
+======================= */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none; /* show bằng JS */
+  background: rgba(0,0,0,0.5);
+  justify-content: center; /* căn ngang giữa màn hình */
+  align-items: flex-start; /* bắt đầu từ trên */
+  padding-top: 80px; /* cách mép menu 60px, tùy menu cao bao nhiêu */
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  width: 380px;
+  max-width: 90%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  transition: all 0.3s ease;
+  /* Không dùng transform nữa */
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 7px 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* Nút Lưu */
+#saveCustomer {
+  background-color: #2ecc71; /* xanh lá */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#saveCustomer:hover {
+  background-color: #27ae60;
+}
+
+/* Nút Hủy */
+#cancelEdit {
+  background-color: #e74c3c; /* đỏ */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#cancelEdit:hover {
+  background-color: #c0392b;
+}
+
+/* Nút Lưu */
+#saveAddress {
+  background-color: #2ecc71; /* xanh lá */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#saveAddress:hover {
+  background-color: #27ae60;
+}
+
+/* Nút Hủy */
+#cancelAddAddress {
+  background-color: #e74c3c; /* đỏ */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#cancelAddAddress:hover {
+  background-color: #c0392b;
+}
+/* nút save/cancel trong popup */
+.btn-save, .btn-cancel, .btn-action {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 14px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-save {
+  background: #2ecc71;
+  color: #fff;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.btn-save:hover {
+  background: #27ae60;
+}
+
+.btn-cancel {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background: #c0392b;
+}
+
+.btn-action {
+  background-color: #1976d2;
+  color: #fff;
+}
+
+.btn-action:hover {
+  background-color: #1565c0;
+}
+
+/* =======================
+   Responsive modal
+======================= */
+@media screen and (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn-save, .btn-cancel, .btn-action {
+    width: 100%;
+    text-align: center;
+  }
+}

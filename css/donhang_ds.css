@@ -1,0 +1,114 @@
+/* donhang_ds.css - giao diện quản lý đơn hàng (cập nhật với QR & thanh toán) */
+
+/* ====================== CƠ BẢN ====================== */
+.container { 
+    max-width:2000px; 
+    margin:36px auto; 
+    padding:0 16px; 
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+  h1 { text-align:center; margin-bottom:18px; }
+  
+  .toolbar-card { 
+    display:flex; 
+    justify-content:space-between; 
+    gap:12px; 
+    margin-bottom:12px; 
+    align-items:center; 
+  }
+  .toolbar-card .left, 
+  .toolbar-card .right { 
+    display:flex; 
+    gap:8px; 
+    align-items:center; 
+  }
+  
+  input, select { 
+    padding:9px 10px; 
+    border-radius:8px; 
+    border:1px solid #d0d7de; 
+    font-size:14px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+  .btn { 
+    padding:8px 12px; 
+    border-radius:8px; 
+    border:none; 
+    background:#eef5ff; 
+    cursor:pointer; 
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+  .btn.primary { background:#007bff; color:#fff; }
+  .btn.search { background:#268d5e; color:#fff; }
+  .btn.delete { background:#ff0000; color:#fff; }
+  
+  /* Card và bảng */
+  .card { background:#fff; padding:14px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.06); }
+  .data-table { width:100%; border-collapse:collapse; font-size:14px; }
+  .data-table th, .data-table td { padding:10px 8px; border-bottom:1px solid #eef1f5; text-align:left; }
+  .data-table thead tr { background:#f6f8fa; }
+  .data-table tbody tr:hover { background:#fbfdff; }
+  
+  /* Cho bảng chiếm toàn bộ chiều ngang */
+#ordersTable {
+  width: 100%;      /* chiếm toàn bộ container */
+  min-width: 100px; /* đặt chiều ngang tối thiểu nếu muốn bảng không quá nhỏ */
+  table-layout: auto; /* cột rộng theo nội dung */
+}
+
+/* Nếu container giới hạn chiều ngang, cho phép scroll */
+.card {
+  overflow-x: auto; /* scroll ngang khi bảng quá lớn */
+}
+
+  /* ====================== MODAL ====================== */
+  .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:999; }
+  .modal-content { background:#fff; width:820px; max-width:95%; border-radius:12px; padding:20px; box-shadow:0 8px 30px rgba(0,0,0,0.18); max-height:90vh; overflow:auto; }
+  .modal-content h2, .modal-content h3 { margin:0 0 10px 0; }
+  .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+  
+  /* ====================== CHI TIẾT ĐƠN HÀNG ====================== */
+  .order-detail { display:flex; flex-direction:column; gap:16px; margin-top:8px; }
+  .detail-section { border:1px solid #e3e8ee; border-radius:10px; padding:12px 16px; background:#fafcff; }
+  .detail-section h3 { font-size:16px; color:#007bff; display:flex; align-items:center; gap:6px; border-bottom:1px dashed #c8d4e0; padding-bottom:6px; margin-bottom:8px; }
+  
+  /* Thông tin khách hàng */
+  .info-row { display:flex; gap:8px; margin:6px 0; font-size:14px; }
+  .info-row b { width:150px; flex-shrink:0; color:#333; }
+  
+  /* Bảng sản phẩm */
+  .detail-table { width:100%; border-collapse:collapse; margin-top:6px; font-size:14px; }
+  .detail-table th, .detail-table td { border:1px solid #e1e6ed; padding:8px; }
+  .detail-table th { background:#f3f6fa; }
+  
+  /* Tổng kết */
+  .summary-box { background:#fff; border-radius:8px; padding:10px; border:1px solid #e6eef8; }
+  .summary-box .info-row { justify-content:space-between; gap:0; }
+  .summary-box .highlight { background:#e6f4ff; border-radius:6px; padding:6px; font-weight:700; color:#0056b3; }
+  
+  /* ====================== POPUP THANH TOÁN (QR & CASH) ====================== */
+  #paymentPopupContent { max-width:520px; margin:0 auto; }
+  #paymentExtra { margin-top:12px; }
+  .payment-qr-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .payment-qr-wrap img { width:180px; height:180px; border:1px solid #ddd; border-radius:8px; background:#fff; }
+  .qr-meta { font-size:13px; color:#333; }
+  .qr-meta b { color:#111; }
+  #qrCountdown { color:#d9534f; font-weight:700; }
+  #qrCodeDisplay { font-family:monospace; background:#f7f7f7; padding:4px 6px; border-radius:6px; }
+  
+  /* cash input */
+  #cashGiven { width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; }
+  #changeAmount { margin-top:8px; font-weight:700; }
+  
+  /* toast */
+  .toast { animation: fadeInOut 2.5s ease-in-out forwards; padding:10px 14px; border-radius:8px; color:#fff; background:#333; position:fixed; right:18px; bottom:18px; z-index:9999; }
+  @keyframes fadeInOut { 0%{opacity:0; transform:translateY(12px);} 10%{opacity:1; transform:none;} 90%{opacity:1;} 100%{opacity:0; transform:translateY(12px);} }
+  
+  /* Responsive */
+  @media (max-width:640px) {
+    .info-row { flex-direction:column; }
+    .info-row b { width:100%; }
+    .modal-content { padding:14px; }
+    #paymentPopupContent { width:95%; }
+  }
+  
